@@ -1,0 +1,1 @@
+To resolve issues around self signed certs, copy them into this directory and import them as part of the container build process.  THe sert import routine can be found in this repo's dockerfile.
