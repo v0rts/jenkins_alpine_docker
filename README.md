@@ -1,7 +1,7 @@
 # V0rts Mod - Official Jenkins Docker image
 
-[![Docker Stars](https://img.shields.io/docker/stars/jenkins/jenkins.svg)](https://hub.docker.com/repository/docker/v0rts/jenkins_alpine/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/jenkins/jenkins.svg)](https://hub.docker.com/repository/docker/v0rts/jenkins_alpine/)
+[![Docker Stars](https://img.shields.io/docker/stars/v0rts/jenkins_alpine.svg)](https://hub.docker.com/repository/docker/v0rts/jenkins_alpine/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/v0rts/jenkins_alpine.svg)](https://hub.docker.com/repository/docker/v0rts/jenkins_alpine/)
 
 The Jenkins Continuous Integration and Delivery server [available on Docker Hub](https://hub.docker.com/r/jenkins/jenkins).
 
