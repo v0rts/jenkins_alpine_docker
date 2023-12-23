@@ -1,5 +1,5 @@
-FROM registry.access.redhat.com/ubi8/ubi:8.8-1067.1697633337 as jre-build
-ARG JAVA_VERSION=11.0.20.1_1
+FROM registry.access.redhat.com/ubi8/ubi:8.9-1028 as jre-build
+ARG JAVA_VERSION=11.0.21_9
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -18,7 +18,7 @@ RUN set -x \
   && jlink --add-modules ALL-MODULE-PATH --no-man-pages --compress=2 --output /javaruntime \
   && dnf clean all
 
-FROM registry.access.redhat.com/ubi8/ubi:8.8-1067.1697633337
+FROM registry.access.redhat.com/ubi8/ubi:8.9-1028
 
 ENV LANG C.UTF-8
 
@@ -98,7 +98,7 @@ ENV JENKINS_UC_EXPERIMENTAL=https://updates.jenkins.io/experimental
 ENV JENKINS_INCREMENTALS_REPO_MIRROR=https://repo.jenkins-ci.org/incrementals
 RUN chown -R ${user} "$JENKINS_HOME" "$REF"
 
-ARG PLUGIN_CLI_VERSION=2.12.13
+ARG PLUGIN_CLI_VERSION=2.12.14
 ARG PLUGIN_CLI_URL=https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/${PLUGIN_CLI_VERSION}/jenkins-plugin-manager-${PLUGIN_CLI_VERSION}.jar
 RUN curl -fsSL ${PLUGIN_CLI_URL} -o /opt/jenkins-plugin-manager.jar
 

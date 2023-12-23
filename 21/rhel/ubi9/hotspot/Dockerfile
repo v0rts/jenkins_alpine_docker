@@ -1,5 +1,5 @@
-FROM registry.access.redhat.com/ubi9/ubi:9.2-722 as jre-build
-ARG JAVA_VERSION=21+35
+FROM registry.access.redhat.com/ubi9/ubi:9.3-1361 as jre-build
+ARG JAVA_VERSION=21.0.1_12
 ARG TARGETPLATFORM
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -28,7 +28,7 @@ RUN jlink \
   --compress=zip-6 \
   --output /javaruntime
 
-FROM registry.access.redhat.com/ubi9/ubi:9.2-722
+FROM registry.access.redhat.com/ubi9/ubi:9.3-1361
 
 ENV LANG C.UTF-8
 
@@ -107,7 +107,7 @@ ENV JENKINS_UC_EXPERIMENTAL=https://updates.jenkins.io/experimental
 ENV JENKINS_INCREMENTALS_REPO_MIRROR=https://repo.jenkins-ci.org/incrementals
 RUN chown -R ${user} "$JENKINS_HOME" "$REF"
 
-ARG PLUGIN_CLI_VERSION=2.12.13
+ARG PLUGIN_CLI_VERSION=2.12.14
 ARG PLUGIN_CLI_URL=https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/${PLUGIN_CLI_VERSION}/jenkins-plugin-manager-${PLUGIN_CLI_VERSION}.jar
 RUN curl -fsSL ${PLUGIN_CLI_URL} -o /opt/jenkins-plugin-manager.jar
 

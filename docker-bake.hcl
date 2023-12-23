@@ -6,7 +6,6 @@ group "linux" {
     "alpine_jdk11",
     "alpine_jdk17",
     "alpine_jdk21",
-    "centos7_jdk11",
     "debian_jdk11",
     "debian_jdk17",
     "debian_jdk21",
@@ -75,7 +74,7 @@ variable "LATEST_LTS" {
 }
 
 variable "PLUGIN_CLI_VERSION" {
-  default = "2.12.13"
+  default = "2.12.14"
 }
 
 variable "COMMIT_SHA" {
@@ -83,7 +82,7 @@ variable "COMMIT_SHA" {
 }
 
 variable "ALPINE_FULL_TAG" {
-  default = "3.18.4"
+  default = "3.19.0"
 }
 
 variable "ALPINE_SHORT_TAG" {
@@ -91,11 +90,11 @@ variable "ALPINE_SHORT_TAG" {
 }
 
 variable "JAVA11_VERSION" {
-  default = "11.0.20.1_1"
+  default = "11.0.21_9"
 }
 
 variable "JAVA17_VERSION" {
-  default = "17.0.8.1_1"
+  default = "17.0.9_9"
 }
 
 # not passed through currently as inconsistent versions are published (2023-08-14)
@@ -105,11 +104,11 @@ variable "JAVA21_PREVIEW_VERSION" {
 }
 
 variable "JAVA21_VERSION" {
-  default = "21_35"
+  default = "21.0.1_12"
 }
 
 variable "BOOKWORM_TAG" {
-  default = "20231009"
+  default = "20231120"
 }
 
 # ----  user-defined functions ----
@@ -220,27 +219,6 @@ target "alpine_jdk21" {
     tag_lts(false, "lts-alpine-jdk21")
   ]
   platforms = ["linux/amd64", "linux/arm64"]
-}
-
-target "centos7_jdk11" {
-  dockerfile = "11/centos/centos7/hotspot/Dockerfile"
-  context    = "."
-  args = {
-    JENKINS_VERSION    = JENKINS_VERSION
-    JENKINS_SHA        = JENKINS_SHA
-    COMMIT_SHA         = COMMIT_SHA
-    PLUGIN_CLI_VERSION = PLUGIN_CLI_VERSION
-    JAVA_VERSION       = JAVA11_VERSION
-  }
-  tags = [
-    tag(true, "centos7"),
-    tag_weekly(false, "centos7"),
-    tag_weekly(false, "centos7-jdk11"),
-    tag_lts(true, "lts-centos7"),
-    tag_lts(false, "lts-centos7"),
-    tag_lts(false, "lts-centos7-jdk11")
-  ]
-  platforms = ["linux/amd64"]
 }
 
 target "debian_jdk11" {
