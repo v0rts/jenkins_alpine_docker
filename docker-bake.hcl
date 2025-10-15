@@ -46,8 +46,12 @@ variable "JENKINS_VERSION" {
   default = "2.504"
 }
 
-variable "JENKINS_SHA" {
+variable "WAR_SHA" {
   default = "efc91d6be8d79dd078e7f930fc4a5f135602d0822a5efe9091808fdd74607d32"
+}
+
+variable "WAR_URL" {
+  default = ""
 }
 
 variable "REGISTRY" {
@@ -75,7 +79,7 @@ variable "COMMIT_SHA" {
 }
 
 variable "ALPINE_FULL_TAG" {
-  default = "3.22.1"
+  default = "3.22.2"
 }
 
 variable "ALPINE_SHORT_TAG" {
@@ -90,8 +94,8 @@ variable "JAVA21_VERSION" {
   default = "21.0.8_9"
 }
 
-variable "BOOKWORM_TAG" {
-  default = "20250908"
+variable "TRIXIE_TAG" {
+  default = "20250929"
 }
 
 # ----  user-defined functions ----
@@ -120,6 +124,19 @@ function "tag_lts" {
   result = equal(LATEST_LTS, "true") ? tag(prepend_jenkins_version, tag) : ""
 }
 
+# return WAR_URL if not empty, get.jenkins.io URL depending on JENKINS_VERSION release line otherwise
+function "war_url" {
+  # If JENKINS_VERSION has more than one sequence of digits with a trailing literal '.', this is LTS
+  # 2.523 has only one sequence of digits with a trailing literal '.'
+  # 2.516.1 has two sequences of digits with a trailing literal '.'
+  params = []
+  result = (notequal(WAR_URL, "")
+    ? WAR_URL
+    : (length(regexall("[0-9]+[.]", JENKINS_VERSION)) < 2
+      ? "https://get.jenkins.io/war/${JENKINS_VERSION}/jenkins.war"
+  : "https://get.jenkins.io/war-stable/${JENKINS_VERSION}/jenkins.war"))
+}
+
 # ---- targets ----
 
 target "alpine_jdk17" {
@@ -127,7 +144,8 @@ target "alpine_jdk17" {
   context    = "."
   args = {
     JENKINS_VERSION    = JENKINS_VERSION
-    JENKINS_SHA        = JENKINS_SHA
+    WAR_SHA            = WAR_SHA
+    WAR_URL            = war_url()
     COMMIT_SHA         = COMMIT_SHA
     PLUGIN_CLI_VERSION = PLUGIN_CLI_VERSION
     ALPINE_TAG         = ALPINE_FULL_TAG
@@ -147,7 +165,8 @@ target "alpine_jdk21" {
   context    = "."
   args = {
     JENKINS_VERSION    = JENKINS_VERSION
-    JENKINS_SHA        = JENKINS_SHA
+    WAR_SHA            = WAR_SHA
+    WAR_URL            = war_url()
     COMMIT_SHA         = COMMIT_SHA
     PLUGIN_CLI_VERSION = PLUGIN_CLI_VERSION
     ALPINE_TAG         = ALPINE_FULL_TAG
@@ -167,14 +186,15 @@ target "alpine_jdk21" {
 }
 
 target "debian_jdk17" {
-  dockerfile = "debian/bookworm/hotspot/Dockerfile"
+  dockerfile = "debian/trixie/hotspot/Dockerfile"
   context    = "."
   args = {
     JENKINS_VERSION    = JENKINS_VERSION
-    JENKINS_SHA        = JENKINS_SHA
+    WAR_SHA            = WAR_SHA
+    WAR_URL            = war_url()
     COMMIT_SHA         = COMMIT_SHA
     PLUGIN_CLI_VERSION = PLUGIN_CLI_VERSION
-    BOOKWORM_TAG       = BOOKWORM_TAG
+    TRIXIE_TAG         = TRIXIE_TAG
     JAVA_VERSION       = JAVA17_VERSION
   }
   tags = [
@@ -188,14 +208,15 @@ target "debian_jdk17" {
 }
 
 target "debian_jdk21" {
-  dockerfile = "debian/bookworm/hotspot/Dockerfile"
+  dockerfile = "debian/trixie/hotspot/Dockerfile"
   context    = "."
   args = {
     JENKINS_VERSION    = JENKINS_VERSION
-    JENKINS_SHA        = JENKINS_SHA
+    WAR_SHA            = WAR_SHA
+    WAR_URL            = war_url()
     COMMIT_SHA         = COMMIT_SHA
     PLUGIN_CLI_VERSION = PLUGIN_CLI_VERSION
-    BOOKWORM_TAG       = BOOKWORM_TAG
+    TRIXIE_TAG         = TRIXIE_TAG
     JAVA_VERSION       = JAVA21_VERSION
   }
   tags = [
@@ -213,14 +234,15 @@ target "debian_jdk21" {
 }
 
 target "debian_slim_jdk17" {
-  dockerfile = "debian/bookworm-slim/hotspot/Dockerfile"
+  dockerfile = "debian/trixie-slim/hotspot/Dockerfile"
   context    = "."
   args = {
     JENKINS_VERSION    = JENKINS_VERSION
-    JENKINS_SHA        = JENKINS_SHA
+    WAR_SHA            = WAR_SHA
+    WAR_URL            = war_url()
     COMMIT_SHA         = COMMIT_SHA
     PLUGIN_CLI_VERSION = PLUGIN_CLI_VERSION
-    BOOKWORM_TAG       = BOOKWORM_TAG
+    TRIXIE_TAG         = TRIXIE_TAG
     JAVA_VERSION       = JAVA17_VERSION
   }
   tags = [
@@ -232,14 +254,15 @@ target "debian_slim_jdk17" {
 }
 
 target "debian_slim_jdk21" {
-  dockerfile = "debian/bookworm-slim/hotspot/Dockerfile"
+  dockerfile = "debian/trixie-slim/hotspot/Dockerfile"
   context    = "."
   args = {
     JENKINS_VERSION    = JENKINS_VERSION
-    JENKINS_SHA        = JENKINS_SHA
+    WAR_SHA            = WAR_SHA
+    WAR_URL            = war_url()
     COMMIT_SHA         = COMMIT_SHA
     PLUGIN_CLI_VERSION = PLUGIN_CLI_VERSION
-    BOOKWORM_TAG       = BOOKWORM_TAG
+    TRIXIE_TAG         = TRIXIE_TAG
     JAVA_VERSION       = JAVA21_VERSION
   }
   tags = [
@@ -259,7 +282,8 @@ target "rhel_ubi9_jdk17" {
   context    = "."
   args = {
     JENKINS_VERSION    = JENKINS_VERSION
-    JENKINS_SHA        = JENKINS_SHA
+    WAR_SHA            = WAR_SHA
+    WAR_URL            = war_url()
     COMMIT_SHA         = COMMIT_SHA
     PLUGIN_CLI_VERSION = PLUGIN_CLI_VERSION
     JAVA_VERSION       = JAVA17_VERSION
@@ -278,7 +302,8 @@ target "rhel_ubi9_jdk21" {
   context    = "."
   args = {
     JENKINS_VERSION    = JENKINS_VERSION
-    JENKINS_SHA        = JENKINS_SHA
+    WAR_SHA            = WAR_SHA
+    WAR_URL            = war_url()
     COMMIT_SHA         = COMMIT_SHA
     PLUGIN_CLI_VERSION = PLUGIN_CLI_VERSION
     JAVA_VERSION       = JAVA21_VERSION
